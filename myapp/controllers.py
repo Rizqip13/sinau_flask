@@ -21,8 +21,8 @@ def test(data):
         return 'error', 500
     return 'ok', 200
 
-def action_create_card(request_body):
-    new_card = card_schema.load(request_body, session=db.session)
+def action_create_card(action):
+    new_card = card_schema.load(action, session=db.session)
     try:
         new_card.save_to_db()
     except IntegrityError as err:
@@ -39,8 +39,8 @@ def action_create_card(request_body):
         return {"message": str(err)}, 500
     return 'ok', 200
 
-def action_added_list_to_board(request_body):
-    new_list = list_schema.load(request_body, session=db.session)
+def action_added_list_to_board(action):
+    new_list = list_schema.load(action, session=db.session)
     try:
         new_list.save_to_db()
     except IntegrityError as err:
@@ -64,10 +64,11 @@ controllers = {
     "action_added_list_to_board": action_added_list_to_board
 }
 
-def controller(translationKey, data):
-    func = controllers.get(translationKey)
+def controller(webhook_body):
+    action = webhook_body.get('action')
+    func = controllers.get(action.get('display', {}).get("translationKey"))
     if func:
-        return func(data)
+        return func(action)
     error_message = f"undefined translationKey {translationKey}"
     print(error_message)
     return {"error": error_message}, 400

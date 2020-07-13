@@ -12,10 +12,10 @@ class CardModel(db.Model):
     webhook_body = db.Column(JSONB, nullable=True)
     # url = db.Column(db.String())
 
-    list_id = db.Column(db.String(), db.ForeignKey('list.id'))
+    list_id = db.Column(db.String(), db.ForeignKey('list.id'), nullable=False)
     list = db.relationship('ListModel')
 
-    board_id = db.Column(db.String(), db.ForeignKey('board.id'))
+    board_id = db.Column(db.String(), db.ForeignKey('board.id'), nullable=False)
     board = db.relationship('BoardModel')
 
     def save_to_db(self):
