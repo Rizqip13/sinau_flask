@@ -12,6 +12,7 @@ class BoardModel(db.Model):
     webhook_body = db.Column(JSONB, nullable=True)
 
     cards = db.relationship('CardModel', lazy='dynamic')
+    lists = db.relationship('ListModel', lazy='dynamic')
 
     def save_to_db(self): # ternyata ini tuh upsert yah
         db.session.add(self)

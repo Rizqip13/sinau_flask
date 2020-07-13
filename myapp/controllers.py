@@ -5,9 +5,11 @@ from sqlalchemy.exc import IntegrityError
 from .extensions import db 
 from .schemas.board import BoardSchema
 from .schemas.card import CardSchema
+from .schemas.list import ListSchema
 
 board_schema = BoardSchema()
 card_schema  = CardSchema()
+list_schema  = ListSchema()
 
 def test(data):
     # print("\n-----------------------------------------------------------------\ndalam test")
@@ -37,9 +39,29 @@ def action_create_card(request_body):
         return {"message": str(err)}, 500
     return 'ok', 200
 
+def action_added_list_to_board(request_body):
+    new_list = list_schema.load(request_body, session=db.session)
+    try:
+        new_list.save_to_db()
+    except IntegrityError as err:
+        """
+        This is okay for now,
+        Nanti harus ditambahkan untuk create board dan list nya dahulu
+        dan harus selalu return 200 kecuali bener2 error
+        """
+        if type(err.orig) == psycopg2.errors.ForeignKeyViolation:
+            orig = search("Key ({})", str(err.orig))
+            return {"message": str(err.orig)}, 400
+    except Exception as err:
+        print(err)
+        return {"message": str(err)}, 500
+    return 'ok', 200
+
+
 controllers = {
     "test": test,
-    "action_create_card": action_create_card
+    "action_create_card": action_create_card,
+    "action_added_list_to_board": action_added_list_to_board
 }
 
 def controller(translationKey, data):
