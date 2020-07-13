@@ -1,3 +1,4 @@
+from parse import *
 import psycopg2
 from sqlalchemy.exc import IntegrityError 
 
@@ -23,14 +24,17 @@ def action_create_card(request_body):
     try:
         new_card.save_to_db()
     except IntegrityError as err:
-        print("IntegrityError")
-        print(err.__dict__.keys())
+        """
+        This is okay for now,
+        Nanti harus ditambahkan untuk create board dan list nya dahulu
+        dan harus selalu return 200 kecuali bener2 error
+        """
         if type(err.orig) == psycopg2.errors.ForeignKeyViolation:
-        # print(err.orig.pgcode)
-            return {"message": "violates foreignkey constrain"}, 400
+            orig = search("Key ({})", str(err.orig))
+            return {"message": str(err.orig)}, 400
     except Exception as err:
         print(err)
-        return {"message":"error"}, 500
+        return {"message": str(err)}, 500
     return 'ok', 200
 
 controllers = {
