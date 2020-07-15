@@ -9,7 +9,7 @@ class BoardModel(db.Model):
     name = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     closed = db.Column(db.Boolean, nullable=False, default=False)
-    webhook_body = db.Column(JSONB, nullable=True)
+    # webhook_body = db.Column(JSONB, nullable=True)
 
     cards = db.relationship('CardModel', lazy='dynamic')
     lists = db.relationship('ListModel', lazy='dynamic')

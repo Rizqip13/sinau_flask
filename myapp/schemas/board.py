@@ -15,4 +15,7 @@ class BoardSchema(ma.SQLAlchemyAutoSchema):
         """
         add webhook_body key value
         """
-        return {**input_data, "webhook_body": input_data}
+        return {
+            **input_data, 
+            # "webhook_body": input_data
+            }
